@@ -1,6 +1,6 @@
 import pygame as p
 import ChessEngine
-WIDTH = HEIGHT = 400
+WIDTH = HEIGHT = 512
 DIMENSION = 8
 SQ_SIZE = HEIGHT//DIMENSION
 MAX_FPS = 15
@@ -61,6 +61,8 @@ def main():
     running = True
     sqSelected = ()  # box clicked by the user (row,col)
     playerClicks = []  # all clicks by user [(row,col),(row,col)]
+
+    # pass
     while running:
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -80,17 +82,26 @@ def main():
                     move = ChessEngine.Move(
                         playerClicks[0], playerClicks[1], gs.board)
                     print(move.getChessNotation())
+                    print(playerClicks)
                     if move in validMoves:
+                        print("moved here:", move.endRow, move.endCol)
                         gs.makeMove(move)
                         moveMade = True
+                    else:
+                        playerClicks = [sqSelected]
                     sqSelected = ()
                     playerClicks = []
             # key handel
             if event.type == p.KEYDOWN:
                 if event.key == p.K_z:
-                    print("in")
                     gs.undoMove()
                     moveMade = True
+                if event.key == p.K_c:
+                    sqSelected = ()
+                    playerClicks = []
+                if event.key == p.K_f:
+                    for i in validMoves:
+                        print(i.startRow, i.startCol, i.endRow, i.endCol)
 
         if moveMade == True:
             validMoves = gs.getValidMove()
