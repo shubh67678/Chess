@@ -19,8 +19,9 @@ def loadImages():
             # print(temp_image, IMAGES)
 
 
-def drawGameState(screen, gs):
+def drawGameState(screen, gs, validMoves, sqSelected):
     drawBoard(screen)
+    highlightSquares(screen, gs, validMoves, sqSelected)
     drawPieces(screen, gs.board)
 
 
@@ -48,6 +49,30 @@ def drawPieces(screen, board):
                 screen.blit(IMAGES[piece_name], temp_rect)
 
 
+def highlightSquares(screen, gs, validMoves, sqSelected):
+    if sqSelected == ():
+        return
+    r, c = sqSelected
+
+    if gs.board[r][c][0] == ("w" if gs.whiteToMove else "b"):
+        sq = p.Surface((SQ_SIZE, SQ_SIZE))
+        sq.set_alpha(80)  # set transparency
+        sq.fill(p.Color("blue"))
+        screen.blit(sq, (c*SQ_SIZE, r*SQ_SIZE))  # draw this object
+        sq.fill(p.Color("yellow"))
+        for move in validMoves:
+            if move.startRow == r and move.startCol == c:
+                screen.blit(sq, (move.endCol*SQ_SIZE, move.endRow*SQ_SIZE))
+
+
+def drawText(screen, text):
+    font = p.font.SysFont("comicsansms", 32, True, False)
+    textObject = font.render(text, 0, p.Color("Black"))
+    textLocation = p.Rect(0, 0, WIDTH, HEIGHT).move(
+        WIDTH/2 - textObject.get_width()/2, HEIGHT/2 - textObject.get_height()/2)
+    screen.blit(textObject, textLocation)
+
+
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
@@ -61,14 +86,16 @@ def main():
     running = True
     sqSelected = ()  # box clicked by the user (row,col)
     playerClicks = []  # all clicks by user [(row,col),(row,col)]
+    gameOver = False
 
-    # pass
     while running:
         for event in p.event.get():
             if event.type == p.QUIT:
                 running = False
             # mouse handel
             elif event.type == p.MOUSEBUTTONDOWN:  # mouse press
+                if gameOver == True:
+                    break
                 location = p.mouse.get_pos()
                 col = location[0]//SQ_SIZE
                 row = location[1]//SQ_SIZE
@@ -101,20 +128,32 @@ def main():
 
             # key handel
             if event.type == p.KEYDOWN:
-                if event.key == p.K_z:
+                if event.key == p.K_z:  # z to undo move
                     gs.undoMove()
                     moveMade = True
-                if event.key == p.K_c:
+                if event.key == p.K_c:  # c to clear variables
                     sqSelected = ()
                     playerClicks = []
-                if event.key == p.K_f:
+                if event.key == p.K_f:  # f to print valid moves
                     for i in validMoves:
                         print(i.startRow, i.startCol, i.endRow, i.endCol)
+                if event.key == p.K_r:
+                    gs = ChessEngine.GameState()
+                    validMoves = gs.getValidMove()
+                    playerClicks = []
+                    sqSelected = ()
+                    moveMade = False
 
         if moveMade == True:
             validMoves = gs.getValidMove()
             moveMade = False
-        drawGameState(screen, gs)
+        drawGameState(screen, gs, validMoves, sqSelected)
+        if gs.checkMate:
+            gameOver = True
+            if gs.whiteToMove:
+                drawText(screen, "Black WON by checkmate")
+            else:
+                drawText(screen, "White WON by checkmate")
         clock.tick(MAX_FPS)
         p.display.flip()
 
