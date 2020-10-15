@@ -83,22 +83,14 @@ def main():
                         playerClicks[0], playerClicks[1], gs.board)
                     print(move.getChessNotation())
                     print(playerClicks)
-                    for i in range(len(validMoves)):
-                        if move == validMoves[i]:
-                            print("moved here:", move.endRow, move.endCol)
-                            if validMoves[i].isPawnPromotion:
-                                print("Promote to:")
-                                new_piece = input().upper()
-                                validMoves[i].promotionChoice = new_piece if new_piece in (
-                                    "Q", "R", "N", "B") else "Q"
-                            gs.makeMove(validMoves[i])
-                            moveMade = True
-                            sqSelected = ()
-                            playerClicks = []
-                            break
-                    if not moveMade:
+                    if move in validMoves:
+                        print("moved here:", move.endRow, move.endCol)
+                        gs.makeMove(move)
+                        moveMade = True
+                    else:
                         playerClicks = [sqSelected]
-
+                    sqSelected = ()
+                    playerClicks = []
             # key handel
             if event.type == p.KEYDOWN:
                 if event.key == p.K_z:
