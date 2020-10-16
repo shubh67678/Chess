@@ -73,6 +73,10 @@ def drawText(screen, text):
     screen.blit(textObject, textLocation)
 
 
+def turnText(isWhiteToMove):
+    return "White's Turn" if isWhiteToMove else "Black's Turn"
+
+
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
@@ -87,6 +91,7 @@ def main():
     sqSelected = ()  # box clicked by the user (row,col)
     playerClicks = []  # all clicks by user [(row,col),(row,col)]
     gameOver = False
+    p.display.set_caption(turnText(gs.whiteToMove))
 
     while running:
         for event in p.event.get():
@@ -120,6 +125,7 @@ def main():
                                     "Q", "R", "N", "B") else "Q"
                             gs.makeMove(validMoves[i])
                             moveMade = True
+                            p.display.set_caption(turnText(gs.whiteToMove))
                             sqSelected = ()
                             playerClicks = []
                             break
@@ -131,6 +137,8 @@ def main():
                 if event.key == p.K_z:  # z to undo move
                     gs.undoMove()
                     moveMade = True
+                    p.display.set_caption(turnText(gs.whiteToMove))
+
                 if event.key == p.K_c:  # c to clear variables
                     sqSelected = ()
                     playerClicks = []
@@ -143,10 +151,13 @@ def main():
                     playerClicks = []
                     sqSelected = ()
                     moveMade = False
+                    p.display.set_caption(turnText(gs.whiteToMove))
 
         if moveMade == True:
             validMoves = gs.getValidMove()
             moveMade = False
+            p.display.set_caption(turnText(gs.whiteToMove))
+
         drawGameState(screen, gs, validMoves, sqSelected)
         if gs.checkMate:
             gameOver = True
