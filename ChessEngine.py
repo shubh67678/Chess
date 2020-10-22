@@ -14,20 +14,26 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
         ]
         self.whiteToMove = True
+        # used to undo moves
         self.moveLog = []
+        # call piece function
         self.loopFunctions = {"P": self.getPawnMoves, "R": self.getRockMoves,
                               "B": self.getBishopMoves, "Q": self.getQueenMoves, "K": self.getKingMoves, "N": self.getNightMoves}
+
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
         self.checkMate = False
         self.staleMate = False
+        # see if castle is possible
         self.currentCastlingRights = CastleRights(True, True, True, True)
         self.castlingRightsLog = []
         self.castlingRightsLog.append(CastleRights(self.currentCastlingRights.wks, self.currentCastlingRights.bks,
                                                    self.currentCastlingRights.wqs, self.currentCastlingRights.bqs))
+        # see if enpassant is possible
         self.enpassantPossible = ()
 
     def makeMove(self, move):
+        # move the piece to target location put blank space on original one
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
@@ -69,8 +75,9 @@ class GameState():
                                                    self.currentCastlingRights.wqs, self.currentCastlingRights.bqs))
 
     def undoMove(self):
-        if len(self.moveLog) > 0:
-            last_move = self.moveLog.pop()
+        if len(self.moveLog) > 0:  # if moves were made
+            last_move = self.moveLog.pop()  # remove the last move
+            # undo board move
             self.board[last_move.startRow][last_move.startCol] = last_move.pieceMoved
             self.board[last_move.endRow][last_move.endCol] = last_move.pieceCaptured
             self.whiteToMove = not self.whiteToMove
@@ -131,7 +138,7 @@ class GameState():
                 moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
-        if len(moves) == 0:
+        if len(moves) == 0:  # if no possible move then check mate
             if self.inCheck():
                 self.checkMate = True
             else:
@@ -165,10 +172,11 @@ class GameState():
         return False
 
     def getAllPossibleMoves(self):
-        moves = [Move((6, 4), (4, 4), self.board)]
+        moves = []
         for row in range(len(self.board)):
             for col in range(len(self.board)):
-                turn = self.board[row][col][0]
+                turn = self.board[row][col][0]  # see piece
+                # move wrt the color and piece
                 if (turn == "w" and self.whiteToMove == True) or (turn == "b" and self.whiteToMove == False):
                     piece = self.board[row][col][1]
                     self.loopFunctions[piece](row, col, moves)
@@ -181,6 +189,7 @@ class GameState():
                 # move up twice if first move
                 if row == 6 and self.board[row-2][col] == "--":
                     moves.append(Move((row, col), (row-2, col), self.board))
+            # enapssant
 
             side_col = col-1
             next_row = row-1
@@ -207,6 +216,7 @@ class GameState():
                 # move up twice if first move
                 if row == 1 and self.board[row+2][col] == "--":
                     moves.append(Move((row, col), (row+2, col), self.board))
+            # enapssant
 
             side_col = col-1
             next_row = row+1
@@ -227,9 +237,11 @@ class GameState():
                     Move((row, col), (next_row, side_col), self.board, isEnpassantMove=True))
 
     def getRockMoves(self, row, col, moves):
+        # all possible lines to move
         directions = ((0, 1), (1, 0), (-1, 0), (0, -1))
         enemyColor = "b" if self.whiteToMove == True else "w"
 
+        # check each line
         for d in directions:
             for i in range(1, 8):
                 next_row = row + d[0]*i
@@ -327,6 +339,8 @@ class GameState():
                     Move((row, col), (next_row, next_col), self.board))
 
     def updateCastleRights(self, move):
+        # 4 cases checked if we can castle
+        # r move, k move
         if move.pieceMoved == "wK":
             self.currentCastlingRights.wks = False
             self.currentCastlingRights.wqs = False
@@ -389,6 +403,7 @@ class Move():
         self.endCol = endSQ[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        # to uniquely determine the move
         self.moveID = self.startRow*1000+self.startCol*100+self.endRow*10+self.endCol
         self.promotionChoice = promotionChoice if promotionChoice in (
             "Q", "R", "N", "B") else "Q"
