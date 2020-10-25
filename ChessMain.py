@@ -240,7 +240,6 @@ def aimove(gs, depth):
     return machmove
 
 
-
 def qsearch(gs,alpha,beta,depth):
     stndpt = evaluate(gs)
     if stndpt>=beta:
@@ -259,7 +258,6 @@ def qsearch(gs,alpha,beta,depth):
             if score > alpha:
                 alpha = score
     return alpha
-
-
+  
 if __name__ == "__main__":
     main()
