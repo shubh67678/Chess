@@ -5,7 +5,7 @@ DIMENSION = 8
 SQ_SIZE = HEIGHT//DIMENSION
 MAX_FPS = 15
 IMAGES = {}
-
+#aaaaaaaaaaaaa
 
 def loadImages():
     colour = ["w", "b"]
