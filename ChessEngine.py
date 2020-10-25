@@ -1,5 +1,53 @@
 import pygame
-
+pawntable=[[0,  0,  0,  0,  0,  0,  0,  0],
+               [50, 50, 50, 50, 50, 50, 50, 50],
+               [10, 10, 20, 30, 30, 20, 10, 10],
+               [5,  5, 10, 25, 25, 10,  5,   5],
+               [0,  0,  0, 20, 20,  0,  0,   0],
+               [5, -5,-10,  0,  0,-10, -5,  5],
+               [5, 10, 10,-20,-20, 10, 10,   5],
+               [0,  0,  0,  0,  0,  0,  0,   0]]
+knighttable = [[-50,-40,-30,-30,-30,-30,-40,-50],
+                 [-40,-20,  0,  0,  0,  0,-20,-40],
+                 [-30,  0, 10, 15, 15, 10,  0,-30],
+                 [-30,  5, 15, 20, 20, 15,  5,-30],
+                 [-30,  0, 15, 20, 20, 15,  0,-30],
+                 [-30,  5, 10, 15, 15, 10,  5,-30],
+                 [-40,-20,  0,  5,  5,  0,-20,-40],
+                 [-50,-40,-30,-30,-30,-30,-40,-50]]
+bishoptable = [[-20,-10,-10,-10,-10,-10,-10,-20,],
+                 [-10,  0,  0,  0,  0,  0,  0,-10,],
+                 [-10,  0,  5, 10, 10,  5,  0,-10,],
+                 [-10,  5,  5, 10, 10,  5,  5,-10,],
+                 [-10,  0, 10, 10, 10, 10,  0,-10,],
+                 [-10, 10, 10, 10, 10, 10, 10,-10,],
+                 [-10,  5,  0,  0,  0,  0,  5,-10,],
+                 [-20,-10,-10,-10,-10,-10,-10,-20,]]
+rooktable = [[0, 0, 0, 0, 0, 0, 0, 0],
+                 [5, 10, 10, 10, 10, 10, 10,  5],
+                 [-5,  0,  0,  0,  0,  0,  0, -5],
+                 [-5,  0,  0,  0,  0,  0,  0, -5],
+                 [-5,  0,  0,  0,  0,  0,  0, -5],
+                 [-5,  0,  0,  0,  0,  0,  0, -5],
+                 [-5,  0,  0,  0,  0,  0,  0, -5],
+                 [0, 0, 0, 5, 5, 0, 0, 0]]
+queentable = [[-20,-10,-10, -5, -5,-10,-10,-20],
+                 [-10,  0,  0,  0,  0,  0,  0,-10],
+                 [-10,  0,  5,  5,  5,  5,  0,-10],
+                 [-5,  0,  5,  5,  5,  5,  0, -5],
+                 [0,  0,  5,  5,  5,  5,  0, -5],
+                 [-10,  5,  5,  5,  5,  5,  0,-10],
+                 [-10,  0,  5,  0,  0,  0,  0,-10],
+                 [-20,-10,-10, -5, -5,-10,-10,-20]]
+kingtable = [[-30,-40,-40,-50,-50,-40,-40,-30],
+                 [-30,-40,-40,-50,-50,-40,-40,-30],
+                 [-30,-40,-40,-50,-50,-40,-40,-30],
+                 [-30,-40,-40,-50,-50,-40,-40,-30],
+                 [-20,-30,-30,-40,-40,-30,-30,-20],
+                 [-10,-20,-20,-20,-20,-20,-20,-10],
+                 [20, 20,  0,  0,  0,  0, 20, 20],
+                 [20, 30, 10,  0,  0, 10, 30, 20]]
+piecevalues = {'P':100,'N':320,'B':330,'R':500,'Q':900}
 
 class GameState():
     def __init__(self):
@@ -26,6 +74,7 @@ class GameState():
         self.castlingRightsLog.append(CastleRights(self.currentCastlingRights.wks, self.currentCastlingRights.bks,
                                                    self.currentCastlingRights.wqs, self.currentCastlingRights.bqs))
         self.enpassantPossible = ()
+        self.boardscore = 0
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -67,7 +116,7 @@ class GameState():
         self.updateCastleRights(move)
         self.castlingRightsLog.append(CastleRights(self.currentCastlingRights.wks, self.currentCastlingRights.bks,
                                                    self.currentCastlingRights.wqs, self.currentCastlingRights.bqs))
-
+        self.boardscore+=evalmove(move)
     def undoMove(self):
         if len(self.moveLog) > 0:
             last_move = self.moveLog.pop()
@@ -108,7 +157,7 @@ class GameState():
                     self.board[last_move.endRow][last_move.endCol -
                                                  2] = self.board[last_move.endRow][last_move.endCol + 1]
                     self.board[last_move.endRow][last_move.endCol + 1] = "--"
-
+            self.boardscore-=evalmove(last_move)
     def getValidMove(self):
         tempCastleRights = CastleRights(self.currentCastlingRights.wks, self.currentCastlingRights.bks,
                                         self.currentCastlingRights.wqs, self.currentCastlingRights.bqs)
