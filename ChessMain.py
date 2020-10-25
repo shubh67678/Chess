@@ -5,7 +5,7 @@ DIMENSION = 8
 SQ_SIZE = HEIGHT//DIMENSION
 MAX_FPS = 15
 IMAGES = {}
-#aaaaaaaaaaaaa
+
 
 def loadImages():
     colour = ["w", "b"]
@@ -26,7 +26,7 @@ def drawGameState(screen, gs, validMoves, sqSelected):
 
 
 def drawBoard(screen):
-    board_colours = [p.Color("white"), p.Color("gray")]
+    board_colours = [(184,139,74),(227,193,111)]
 
     for r in range(DIMENSION):
         for c in range(DIMENSION):
@@ -84,6 +84,51 @@ def turnText(isWhiteToMove):
     return "White's Turn" if isWhiteToMove else "Black's Turn"
 
 
+def drawOptionBox(screen,human,computer):
+    #draw option box
+    window = p.Surface((6*SQ_SIZE,4*SQ_SIZE))
+    window.fill(p.Color("yellow"))
+    screen.blit(window,(1*SQ_SIZE,2*SQ_SIZE))
+
+    #draw option text
+    font = p.font.SysFont("comicsansms", 32, True, False)
+    textObject = font.render("Play Against ",True, p.Color("Black"))
+    textLocation = textObject.get_rect()
+    textLocation.center=(WIDTH//2,3*SQ_SIZE)
+    screen.blit(textObject, textLocation)
+
+    #draw human and computer icon
+    location=p.Rect(2*SQ_SIZE,4*SQ_SIZE,SQ_SIZE,SQ_SIZE)
+    screen.blit(human,location)
+
+    location=p.Rect(5*SQ_SIZE,4*SQ_SIZE,SQ_SIZE,SQ_SIZE)
+    screen.blit(computer,location)    
+
+
+
+def drawOptionWindow(screen,gs,human,computer):
+    drawBoard(screen)
+    drawOptionBox(screen,human,computer)
+
+def OptionWindow(screen,gs):
+    human=p.image.load("images/human.png")
+    computer=p.image.load("images/computer.png")
+
+    while True:
+        for event in p.event.get():
+            if event.type==p.QUIT:
+                return 0
+            elif event.type==p.MOUSEBUTTONDOWN:
+                location = p.mouse.get_pos()
+                col = location[0]//SQ_SIZE
+                row = location[1]/SQ_SIZE
+
+                if row>=4 and row<=5.5 and col in [2,5]:
+                    return 1 if col==2 else 2
+
+        drawOptionWindow(screen,gs,human,computer)
+        p.display.flip()          
+
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
@@ -99,10 +144,16 @@ def main():
     playerClicks = []  # all clicks by user [(row,col),(row,col)]
     gameOver = False
     p.display.set_caption(turnText(gs.whiteToMove))
-
+    flag=1
+    choice=1
     while running:
+        if flag:
+            flag=0
+            choice=OptionWindow(screen,gs)
+            if choice==0:
+                break
         for event in p.event.get():
-            if not gs.whiteToMove:
+            if not gs.whiteToMove and choice==2:
                 move = aimove(gs, 3)
                 gs.makeMove(move)
                 moveMade = True
@@ -111,7 +162,7 @@ def main():
             if event.type == p.QUIT:
                 running = False
             # mouse handel
-            elif event.type == p.MOUSEBUTTONDOWN and gs.whiteToMove:  # mouse press
+            elif event.type == p.MOUSEBUTTONDOWN and (gs.whiteToMove or choice==1):  # mouse press
                 if gameOver == True:
                     break
                 location = p.mouse.get_pos()
@@ -144,12 +195,12 @@ def main():
                             break
                     if not moveMade:
                         playerClicks = [sqSelected]
-
-            # key handel
-            if event.type == p.KEYDOWN and gs.whiteToMove:
+            elif event.type == p.KEYDOWN:
                 if event.key == p.K_z:  # z to undo move
+                    print(gs.moveLog)
                     gs.undoMove()
-                    gs.undoMove()
+                    if not gs.whiteToMove and choice==2:
+                        gs.undoMove()
                     moveMade = True
                     p.display.set_caption(turnText(gs.whiteToMove))
 
