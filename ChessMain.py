@@ -259,7 +259,7 @@ def minimaxalphabeta(gs, alpha, beta, depth):
         if move.isPawnPromotion:
             move.promotionChoice = 'Q'
         gs.makeMove(move)
-        score = minimaxalphabeta(gs, -beta, -alpha, depth-1)
+        score = -minimaxalphabeta(gs, -beta, -alpha, depth-1)
         gs.undoMove()
         if(score >= beta):
             return score
