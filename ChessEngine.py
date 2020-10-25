@@ -426,4 +426,78 @@ def print_text_board(arr):
         for j in i:
             print(j, end=" ")
         print()
+def evalmove(move):
+    score = 0
+    if move.pieceMoved[0] == 'b':
+        if move.pieceMoved[1] == 'P':
+            score -= (pawntable[move.endRow][move.endCol] - pawntable[move.startRow][move.startCol])
+        if move.pieceMoved[1] == 'R':
+            score -= (rooktable[move.endRow][move.endCol] - rooktable[move.startRow][move.startCol])
+        if move.pieceMoved[1] == 'N':
+            score -= (knighttable[move.endRow][move.endCol] - knighttable[move.startRow][move.startCol])
+        if move.pieceMoved[1] == 'B':
+            score -= (bishoptable[move.endRow][move.endCol] - bishoptable[move.startRow][move.startCol])
+        if move.pieceMoved[1] == 'Q':
+            score -= (queentable[move.endRow][move.endCol] - queentable[move.startRow][move.startCol])
+        if move.pieceMoved[1] == 'K':
+            score -= (kingtable[move.endRow][move.endCol] - kingtable[move.startRow][move.startCol])
+    if move.pieceMoved[0] == 'w':
+        if move.pieceMoved[1] == 'P':
+            score += (
+                        pawntable[7 - move.endRow][7 - move.endCol] - pawntable[7 - move.startRow][7 - move.startCol])
+        if move.pieceMoved[1] == 'R':
+            score += (
+                        rooktable[7 - move.endRow][7 - move.endCol] - rooktable[7 - move.startRow][7 - move.startCol])
+        if move.pieceMoved[1] == 'N':
+            score += (knighttable[7 - move.endRow][7 - move.endCol] - knighttable[7 - move.startRow][
+                7 - move.startCol])
+        if move.pieceMoved[1] == 'B':
+            score += (bishoptable[7 - move.endRow][7 - move.endCol] - bishoptable[7 - move.startRow][
+                7 - move.startCol])
+        if move.pieceMoved[1] == 'Q':
+            score += (
+                        queentable[7 - move.endRow][7 - move.endCol] - queentable[7 - move.startRow][7 - move.startCol])
+        if move.pieceMoved[1] == 'K':
+            score += (
+                        kingtable[7 - move.endRow][7 - move.endCol] - kingtable[7 - move.startRow][7 - move.startCol])
+    if move.pieceCaptured!='--':
+        if move.pieceCaptured[0]=='w':
+            score-=piecevalues[move.pieceCaptured[1]]
+            if move.pieceCaptured[1] == 'P':
+                score -= (
+                        pawntable[7 - move.endRow][7 - move.endCol] )
+            if move.pieceCaptured[1] == 'R':
+                score -= (
+                        rooktable[7 - move.endRow][7 - move.endCol])
+            if move.pieceCaptured[1] == 'N':
+                score -= (knighttable[7 - move.endRow][7 - move.endCol] )
+            if move.pieceCaptured[1] == 'B':
+                score -= (bishoptable[7 - move.endRow][7 - move.endCol] )
+            if move.pieceCaptured[1] == 'Q':
+                score -= (
+                        queentable[7 - move.endRow][7 - move.endCol] )
+            if move.pieceCaptured[1] == 'K':
+                score -= (
+                        kingtable[7 - move.endRow][7 - move.endCol])
+        else:
+            score += piecevalues[move.pieceCaptured[1]]
+            if move.pieceCaptured[1] == 'P':
+                score += (
+                        pawntable[move.endRow][move.endCol] )
+            if move.pieceCaptured[1] == 'R':
+                score += (
+                        rooktable[move.endRow][move.endCol])
+            if move.pieceCaptured[1] == 'N':
+                score += (knighttable[move.endRow][move.endCol] )
+            if move.pieceCaptured[1] == 'B':
+                score += (bishoptable[move.endRow][move.endCol] )
+            if move.pieceCaptured[1] == 'Q':
+                score += (
+                        queentable[move.endRow][move.endCol] )
+            if move.pieceCaptured[1] == 'K':
+                score += (
+                        kingtable[move.endRow][move.endCol])
+
+    #print("The eval score is "+str(score))
+    return score
 

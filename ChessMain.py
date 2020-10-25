@@ -184,118 +184,17 @@ def main():
 
 
 def evaluate(gs):
-    pawntable = [[0,  0,  0,  0,  0,  0,  0,  0],
-                 [50, 50, 50, 50, 50, 50, 50, 50],
-                 [10, 10, 20, 30, 30, 20, 10, 10],
-                 [5,  5, 10, 25, 25, 10,  5,   5],
-                 [0,  0,  0, 20, 20,  0,  0,   0],
-                 [5, -5, -10,  0,  0, -10, -5,  5],
-                 [5, 10, 10, -20, -20, 10, 10,   5],
-                 [0,  0,  0,  0,  0,  0,  0,   0]]
-    knighttable = [[-50, -40, -30, -30, -30, -30, -40, -50],
-                   [-40, -20,  0,  0,  0,  0, -20, -40],
-                   [-30,  0, 10, 15, 15, 10,  0, -30],
-                   [-30,  5, 15, 20, 20, 15,  5, -30],
-                   [-30,  0, 15, 20, 20, 15,  0, -30],
-                   [-30,  5, 10, 15, 15, 10,  5, -30],
-                   [-40, -20,  0,  5,  5,  0, -20, -40],
-                   [-50, -40, -30, -30, -30, -30, -40, -50]]
-    bishoptable = [[-20, -10, -10, -10, -10, -10, -10, -20, ],
-                   [-10,  0,  0,  0,  0,  0,  0, -10, ],
-                   [-10,  0,  5, 10, 10,  5,  0, -10, ],
-                   [-10,  5,  5, 10, 10,  5,  5, -10, ],
-                   [-10,  0, 10, 10, 10, 10,  0, -10, ],
-                   [-10, 10, 10, 10, 10, 10, 10, -10, ],
-                   [-10,  5,  0,  0,  0,  0,  5, -10, ],
-                   [-20, -10, -10, -10, -10, -10, -10, -20, ]]
-    rooktable = [[0, 0, 0, 0, 0, 0, 0, 0],
-                 [5, 10, 10, 10, 10, 10, 10,  5],
-                 [-5,  0,  0,  0,  0,  0,  0, -5],
-                 [-5,  0,  0,  0,  0,  0,  0, -5],
-                 [-5,  0,  0,  0,  0,  0,  0, -5],
-                 [-5,  0,  0,  0,  0,  0,  0, -5],
-                 [-5,  0,  0,  0,  0,  0,  0, -5],
-                 [0, 0, 0, 5, 5, 0, 0, 0]]
-    queentable = [[-20, -10, -10, -5, -5, -10, -10, -20],
-                  [-10,  0,  0,  0,  0,  0,  0, -10],
-                  [-10,  0,  5,  5,  5,  5,  0, -10],
-                  [-5,  0,  5,  5,  5,  5,  0, -5],
-                  [0,  0,  5,  5,  5,  5,  0, -5],
-                  [-10,  5,  5,  5,  5,  5,  0, -10],
-                  [-10,  0,  5,  0,  0,  0,  0, -10],
-                  [-20, -10, -10, -5, -5, -10, -10, -20]]
-    kingtable = [[-30, -40, -40, -50, -50, -40, -40, -30],
-                 [-30, -40, -40, -50, -50, -40, -40, -30],
-                 [-30, -40, -40, -50, -50, -40, -40, -30],
-                 [-30, -40, -40, -50, -50, -40, -40, -30],
-                 [-20, -30, -30, -40, -40, -30, -30, -20],
-                 [-10, -20, -20, -20, -20, -20, -20, -10],
-                 [20, 20,  0,  0,  0,  0, 20, 20],
-                 [20, 30, 10,  0,  0, 10, 30, 20]]
-
-    if gs.checkMate:
-        if gs.whiteToMOve:
+        if gs.checkMate:
+        if gs.whiteToMove :
             return -10000
         else:
             return 10000
     if gs.staleMate:
         return 0
-    wp = 0
-    wr = 0
-    wn = 0
-    wb = 0
-    wq = 0
-    bp = 0
-    br = 0
-    bn = 0
-    bb = 0
-    bq = 0
-
-    score = 0
-    for i in range(8):
-        for j in range(8):
-            if gs.board[i][j][0] == 'b':
-                if gs.board[i][j][1] == 'P':
-                    score += pawntable[i][j]
-                    bp += 1
-                if gs.board[i][j][1] == 'R':
-                    score += rooktable[i][j]
-                    br += 1
-                if gs.board[i][j][1] == 'N':
-                    score += knighttable[i][j]
-                    bn += 1
-                if gs.board[i][j][1] == 'B':
-                    score += bishoptable[i][j]
-                    bb += 1
-                if gs.board[i][j][1] == 'Q':
-                    score += queentable[i][j]
-                    bq += 1
-                if gs.board[i][j][1] == 'K':
-                    score += kingtable[i][j]
-            if gs.board[i][j][0] == 'w':
-                if gs.board[i][j][1] == 'P':
-                    score -= pawntable[7-i][7-j]
-                    wp += 1
-                if gs.board[i][j][1] == 'R':
-                    score -= rooktable[7-i][7-j]
-                    wr += 1
-                if gs.board[i][j][1] == 'N':
-                    score -= knighttable[7-i][7-j]
-                    wn += 1
-                if gs.board[i][j][1] == 'B':
-                    score -= bishoptable[7-i][7-j]
-                    wb += 1
-                if gs.board[i][j][1] == 'Q':
-                    score -= queentable[7-i][7-j]
-                    wq += 1
-                if gs.board[i][j][1] == 'K':
-                    score -= kingtable[7-i][7-j]
-    diff = 100 * (wp-bp) + 320 * (wn-bn) + 330 * (wb-bb) + 500 * (
-        wr-br) + 900 * (wq-bq)
-    score += diff
+    score = gs.boardscore
     if gs.whiteToMove:
         return score
-    else:
+    else :
         return -score
 
 
@@ -304,6 +203,7 @@ def minimaxalphabeta(gs, alpha, beta, depth):
         return evaluate(gs)
     maxscore = -10000
     moves = gs.getValidMove()
+    moves.sort(key = ChessEngine.evalmove,reverse = True)
     for move in moves:
         if move.isPawnPromotion:
             move.promotionChoice = 'Q'
@@ -325,6 +225,7 @@ def aimove(gs, depth):
     alpha = -100000
     beta = 100000
     moves = gs.getValidMove()
+    moves.sort(key = ChessEngine.evalmove,reverse = True)
     for move in moves:
         if move.isPawnPromotion:
             move.promotionChoice = 'Q'
@@ -339,5 +240,24 @@ def aimove(gs, depth):
     return machmove
 
 
+def qsearch(gs,alpha,beta,depth):
+    stndpt = evaluate(gs)
+    if stndpt>=beta:
+        return beta
+    if alpha < stndpt:
+        alpha = stndpt
+    moves = gs.getValidMove()
+    moves.sort(key = ChessEngine.evalmove,reverse = True)
+    for move in moves:
+        if move.pieceCaptured != '--':
+            gs.makeMove(move)
+            score = -qsearch(gs,-beta,-alpha,depth-1)
+            gs.undoMove()
+            if score>=beta:
+                return beta
+            if score > alpha:
+                alpha = score
+    return alpha
+  
 if __name__ == "__main__":
     main()
