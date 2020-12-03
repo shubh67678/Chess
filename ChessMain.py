@@ -26,7 +26,7 @@ def drawGameState(screen, gs, validMoves, sqSelected):
 
 
 def drawBoard(screen):
-    board_colours = [(184,139,74),(227,193,111)]
+    board_colours = [(184, 139, 74), (227, 193, 111)]
 
     for r in range(DIMENSION):
         for c in range(DIMENSION):
@@ -84,50 +84,51 @@ def turnText(isWhiteToMove):
     return "White's Turn" if isWhiteToMove else "Black's Turn"
 
 
-def drawOptionBox(screen,human,computer):
-    #draw option box
-    window = p.Surface((6*SQ_SIZE,4*SQ_SIZE))
+def drawOptionBox(screen, human, computer):
+    # draw option box
+    window = p.Surface((6*SQ_SIZE, 4*SQ_SIZE))
     window.fill(p.Color("yellow"))
-    screen.blit(window,(1*SQ_SIZE,2*SQ_SIZE))
+    screen.blit(window, (1*SQ_SIZE, 2*SQ_SIZE))
 
-    #draw option text
+    # draw option text
     font = p.font.SysFont("comicsansms", 32, True, False)
-    textObject = font.render("Play Against ",True, p.Color("Black"))
+    textObject = font.render("Play Against ", True, p.Color("Black"))
     textLocation = textObject.get_rect()
-    textLocation.center=(WIDTH//2,3*SQ_SIZE)
+    textLocation.center = (WIDTH//2, 3*SQ_SIZE)
     screen.blit(textObject, textLocation)
 
-    #draw human and computer icon
-    location=p.Rect(2*SQ_SIZE,4*SQ_SIZE,SQ_SIZE,SQ_SIZE)
-    screen.blit(human,location)
+    # draw human and computer icon
+    location = p.Rect(2*SQ_SIZE, 4*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+    screen.blit(human, location)
 
-    location=p.Rect(5*SQ_SIZE,4*SQ_SIZE,SQ_SIZE,SQ_SIZE)
-    screen.blit(computer,location)    
+    location = p.Rect(5*SQ_SIZE, 4*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+    screen.blit(computer, location)
 
 
-
-def drawOptionWindow(screen,gs,human,computer):
+def drawOptionWindow(screen, gs, human, computer):
     drawBoard(screen)
-    drawOptionBox(screen,human,computer)
+    drawOptionBox(screen, human, computer)
 
-def OptionWindow(screen,gs):
-    human=p.image.load("images/human.png")
-    computer=p.image.load("images/computer.png")
+
+def OptionWindow(screen, gs):
+    human = p.image.load("images/human.png")
+    computer = p.image.load("images/computer.png")
 
     while True:
         for event in p.event.get():
-            if event.type==p.QUIT:
+            if event.type == p.QUIT:
                 return 0
-            elif event.type==p.MOUSEBUTTONDOWN:
+            elif event.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()
                 col = location[0]//SQ_SIZE
                 row = location[1]/SQ_SIZE
 
-                if row>=4 and row<=5.5 and col in [2,5]:
-                    return 1 if col==2 else 2
+                if row >= 4 and row <= 5.5 and col in [2, 5]:
+                    return 1 if col == 2 else 2
 
-        drawOptionWindow(screen,gs,human,computer)
-        p.display.flip()          
+        drawOptionWindow(screen, gs, human, computer)
+        p.display.flip()
+
 
 def main():
     p.init()
@@ -144,16 +145,16 @@ def main():
     playerClicks = []  # all clicks by user [(row,col),(row,col)]
     gameOver = False
     p.display.set_caption(turnText(gs.whiteToMove))
-    flag=1
-    choice=1
+    flag = 1
+    choice = 1
     while running:
         if flag:
-            flag=0
-            choice=OptionWindow(screen,gs)
-            if choice==0:
+            flag = 0
+            choice = OptionWindow(screen, gs)
+            if choice == 0:
                 break
         for event in p.event.get():
-            if not gs.whiteToMove and choice==2:
+            if not gs.whiteToMove and choice == 2:
                 move = aimove(gs, 3)
                 gs.makeMove(move)
                 moveMade = True
@@ -162,7 +163,8 @@ def main():
             if event.type == p.QUIT:
                 running = False
             # mouse handel
-            elif event.type == p.MOUSEBUTTONDOWN and (gs.whiteToMove or choice==1):  # mouse press
+            # mouse press
+            elif event.type == p.MOUSEBUTTONDOWN and (gs.whiteToMove or choice == 1):
                 if gameOver == True:
                     break
                 location = p.mouse.get_pos()
@@ -199,7 +201,7 @@ def main():
                 if event.key == p.K_z:  # z to undo move
                     print(gs.moveLog)
                     gs.undoMove()
-                    if not gs.whiteToMove and choice==2:
+                    if not gs.whiteToMove and choice == 2:
                         gs.undoMove()
                     moveMade = True
                     p.display.set_caption(turnText(gs.whiteToMove))
@@ -235,8 +237,8 @@ def main():
 
 
 def evaluate(gs):
-        if gs.checkMate:
-        if gs.whiteToMove :
+    if gs.checkMate:
+        if gs.whiteToMove:
             return -10000
         else:
             return 10000
@@ -245,7 +247,7 @@ def evaluate(gs):
     score = gs.boardscore
     if gs.whiteToMove:
         return score
-    else :
+    else:
         return -score
 
 
@@ -254,7 +256,7 @@ def minimaxalphabeta(gs, alpha, beta, depth):
         return evaluate(gs)
     maxscore = -10000
     moves = gs.getValidMove()
-    moves.sort(key = ChessEngine.evalmove,reverse = True)
+    moves.sort(key=ChessEngine.evalmove, reverse=True)
     for move in moves:
         if move.isPawnPromotion:
             move.promotionChoice = 'Q'
@@ -276,7 +278,7 @@ def aimove(gs, depth):
     alpha = -100000
     beta = 100000
     moves = gs.getValidMove()
-    moves.sort(key = ChessEngine.evalmove,reverse = True)
+    moves.sort(key=ChessEngine.evalmove, reverse=True)
     for move in moves:
         if move.isPawnPromotion:
             move.promotionChoice = 'Q'
@@ -291,26 +293,27 @@ def aimove(gs, depth):
     return machmove
 
 
-def qsearch(gs,alpha,beta,depth):
+def qsearch(gs, alpha, beta, depth):
     stndpt = evaluate(gs)
     if depth == 0:
         return stndpt
-    if stndpt>=beta:
+    if stndpt >= beta:
         return beta
     if alpha < stndpt:
         alpha = stndpt
     moves = gs.getValidMove()
-    moves.sort(key = ChessEngine.evalmove,reverse = True)
+    moves.sort(key=ChessEngine.evalmove, reverse=True)
     for move in moves:
         if move.pieceCaptured != '--':
             gs.makeMove(move)
-            score = -qsearch(gs,-beta,-alpha,depth-1)
+            score = -qsearch(gs, -beta, -alpha, depth-1)
             gs.undoMove()
-            if score>=beta:
+            if score >= beta:
                 return beta
             if score > alpha:
                 alpha = score
     return alpha
-  
+
+
 if __name__ == "__main__":
     main()
