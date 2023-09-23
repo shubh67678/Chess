@@ -8,10 +8,10 @@ IMAGES = {}
 
 
 def loadImages():
-    colour = ["w", "b"]
+    color = ["w", "b"]
     pieces = ["P", "R", "N", "K", "Q", "B"]
 
-    for side in colour:
+    for side in color:
         for piece in pieces:
             name = side+piece
             temp_image = p.image.load("images/"+name+".png")
@@ -25,15 +25,15 @@ def drawGameState(screen, gs):
 
 
 def drawBoard(screen):
-    board_colours = [p.Color("white"), p.Color("gray")]
+    board_colors = [p.Color("white"), p.Color("gray")]
 
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             temp_rect = p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE)
             if ((r+c) % 2) == 0:
-                p.draw.rect(screen, board_colours[0], temp_rect)
+                p.draw.rect(screen, board_colors[0], temp_rect)
             else:
-                p.draw.rect(screen, board_colours[1], temp_rect)
+                p.draw.rect(screen, board_colors[1], temp_rect)
 
 
 def drawPieces(screen, board):

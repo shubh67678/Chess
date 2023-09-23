@@ -318,26 +318,9 @@ class GameState():
                     break
 
     def getQueenMoves(self, row, col, moves):
-        directions = ((0, 1), (1, 0), (-1, 0), (0, -1),
-                      (1, 1), (-1, -1), (-1, 1), (1, -1))
-        enemyColor = "b" if self.whiteToMove == True else "w"
-
-        for d in directions:
-            for i in range(1, 8):
-                next_row = row + d[0]*i
-                next_col = col + d[1]*i
-                if self.inside_board(next_row, next_col) == False:
-                    break
-                if self.board[next_row][next_col] == "--":
-                    moves.append(
-                        Move((row, col), (next_row, next_col), self.board))
-                    continue
-                if self.board[next_row][next_col][0] == enemyColor:
-                    moves.append(
-                        Move((row, col), (next_row, next_col), self.board))
-                    break
-                else:
-                    break
+        # ! don't repete yourself # DRY
+        self.getRockMoves( row, col, moves);
+        self.getBishopMoves( row, col, moves);
 
     def getKingMoves(self, row, col, moves):
         directions = ((0, 1), (1, 0), (-1, 0), (0, -1),
