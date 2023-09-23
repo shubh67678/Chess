@@ -8,10 +8,10 @@ IMAGES = {}
 
 
 def loadImages():
-    colour = ["w", "b"]
+    color = ["w", "b"] # typo 
     pieces = ["P", "R", "N", "K", "Q", "B"]
 
-    for side in colour:
+    for side in color:
         for piece in pieces:
             name = side+piece
             temp_image = p.image.load("images/"+name+".png")
@@ -26,15 +26,15 @@ def drawGameState(screen, gs, validMoves, sqSelected):
 
 
 def drawBoard(screen):
-    board_colours = [(184, 139, 74), (227, 193, 111)]
+    board_colors = [(184, 139, 74), (227, 193, 111)]
 
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             temp_rect = p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE)
             if ((r+c) % 2) == 0:
-                p.draw.rect(screen, board_colours[0], temp_rect)
+                p.draw.rect(screen, board_colors[0], temp_rect)
             else:
-                p.draw.rect(screen, board_colours[1], temp_rect)
+                p.draw.rect(screen, board_colors[1], temp_rect)
 
 
 def drawPieces(screen, board):
@@ -80,7 +80,7 @@ def drawText(screen, text):
     screen.blit(textObject, textLocation)
 
 
-def turnText(isWhiteToMove):
+def turnText(isWhiteToMove) -> str :
     return "White's Turn" if isWhiteToMove else "Black's Turn"
 
 
@@ -105,12 +105,12 @@ def drawOptionBox(screen, human, computer):
     screen.blit(computer, location)
 
 
-def drawOptionWindow(screen, gs, human, computer):
+def drawOptionWindow(screen, gs, human, computer) -> None:
     drawBoard(screen)
     drawOptionBox(screen, human, computer)
 
 
-def OptionWindow(screen, gs):
+def OptionWindow(screen, gs) -> 0 | 1 | 2 :
     human = p.image.load("images/human.png")
     computer = p.image.load("images/computer.png")
 
@@ -130,7 +130,7 @@ def OptionWindow(screen, gs):
         p.display.flip()
 
 
-def main():
+def main() -> None:
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
@@ -236,7 +236,7 @@ def main():
         p.display.flip()
 
 
-def evaluate(gs):
+def evaluate(gs)  :
     if gs.checkMate:
         if gs.whiteToMove:
             return -10000
@@ -251,7 +251,7 @@ def evaluate(gs):
         return -score
 
 
-def minimaxalphabeta(gs, alpha, beta, depth):
+def minimaxalphabeta(gs, alpha, beta, depth) -> float :
     if(depth == 0):
         return evaluate(gs)
     maxscore = -10000
@@ -272,7 +272,7 @@ def minimaxalphabeta(gs, alpha, beta, depth):
     return maxscore
 
 
-def aimove(gs, depth):
+def aimove(gs, depth) :
     machmove = None
     maxval = -99999
     alpha = -100000
