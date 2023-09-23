@@ -80,7 +80,7 @@ def drawText(screen, text):
     screen.blit(textObject, textLocation)
 
 
-def turnText(isWhiteToMove):
+def turnText(isWhiteToMove) -> str :
     return "White's Turn" if isWhiteToMove else "Black's Turn"
 
 
@@ -105,12 +105,12 @@ def drawOptionBox(screen, human, computer):
     screen.blit(computer, location)
 
 
-def drawOptionWindow(screen, gs, human, computer):
+def drawOptionWindow(screen, gs, human, computer) -> None:
     drawBoard(screen)
     drawOptionBox(screen, human, computer)
 
 
-def OptionWindow(screen, gs):
+def OptionWindow(screen, gs) -> 0 | 1 | 2 :
     human = p.image.load("images/human.png")
     computer = p.image.load("images/computer.png")
 
@@ -130,7 +130,7 @@ def OptionWindow(screen, gs):
         p.display.flip()
 
 
-def main():
+def main() -> None:
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
@@ -236,7 +236,7 @@ def main():
         p.display.flip()
 
 
-def evaluate(gs):
+def evaluate(gs) -> Any :
     if gs.checkMate:
         if gs.whiteToMove:
             return -10000
@@ -251,7 +251,7 @@ def evaluate(gs):
         return -score
 
 
-def minimaxalphabeta(gs, alpha, beta, depth):
+def minimaxalphabeta(gs, alpha, beta, depth) -> float :
     if(depth == 0):
         return evaluate(gs)
     maxscore = -10000
@@ -272,7 +272,7 @@ def minimaxalphabeta(gs, alpha, beta, depth):
     return maxscore
 
 
-def aimove(gs, depth):
+def aimove(gs, depth) :
     machmove = None
     maxval = -99999
     alpha = -100000
