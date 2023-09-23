@@ -236,7 +236,7 @@ def main() -> None:
         p.display.flip()
 
 
-def evaluate(gs) -> Any :
+def evaluate(gs)  :
     if gs.checkMate:
         if gs.whiteToMove:
             return -10000
